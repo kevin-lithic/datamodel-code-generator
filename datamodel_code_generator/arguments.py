@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from datamodel_code_generator import DataModelType, InputFileType, OpenAPIScope
 from datamodel_code_generator.format import PythonVersion
 from datamodel_code_generator.parser import LiteralType
-from datamodel_code_generator.types import StrictTypes
+from datamodel_code_generator.internal_types import StrictTypes
 
 if TYPE_CHECKING:
     from argparse import Action

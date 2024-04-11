@@ -29,7 +29,7 @@ from datamodel_code_generator.model.pydantic.base_model import (
 )
 from datamodel_code_generator.model.rootmodel import RootModel as _RootModel
 from datamodel_code_generator.reference import Reference
-from datamodel_code_generator.types import chain_as_tuple, get_optional_type
+from datamodel_code_generator.internal_types import chain_as_tuple, get_optional_type
 
 
 def _has_field_assignment(field: DataModelFieldBase) -> bool:

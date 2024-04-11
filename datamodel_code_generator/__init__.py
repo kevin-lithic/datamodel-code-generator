@@ -32,7 +32,7 @@ import yaml
 from datamodel_code_generator.format import PythonVersion
 from datamodel_code_generator.parser import DefaultPutDict, LiteralType
 from datamodel_code_generator.parser.base import Parser
-from datamodel_code_generator.types import StrictTypes
+from datamodel_code_generator.internal_types import StrictTypes
 from datamodel_code_generator.util import SafeLoader  # type: ignore
 
 T = TypeVar('T')
@@ -305,7 +305,7 @@ def generate(
     if isinstance(input_, str):
         input_text: Optional[str] = input_
     elif isinstance(input_, ParseResult):
-        from datamodel_code_generator.http import get_body
+        from datamodel_code_generator.internal_http import get_body
 
         input_text = remote_text_cache.get_or_put(
             input_.geturl(),

@@ -30,7 +30,7 @@ from datamodel_code_generator.imports import (
     Import,
 )
 from datamodel_code_generator.reference import Reference, _BaseModel
-from datamodel_code_generator.types import (
+from datamodel_code_generator.internal_types import (
     ANY,
     NONE,
     UNION_PREFIX,

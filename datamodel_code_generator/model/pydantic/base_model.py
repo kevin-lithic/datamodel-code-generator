@@ -17,7 +17,7 @@ from datamodel_code_generator.model.pydantic.imports import (
     IMPORT_FIELD,
 )
 from datamodel_code_generator.reference import Reference
-from datamodel_code_generator.types import UnionIntFloat, chain_as_tuple
+from datamodel_code_generator.internal_types import UnionIntFloat, chain_as_tuple
 from datamodel_code_generator.util import cached_property
 
 

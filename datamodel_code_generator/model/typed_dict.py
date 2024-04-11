@@ -21,7 +21,7 @@ from datamodel_code_generator.model.imports import (
     IMPORT_TYPED_DICT_BACKPORT,
 )
 from datamodel_code_generator.reference import Reference
-from datamodel_code_generator.types import NOT_REQUIRED_PREFIX
+from datamodel_code_generator.internal_types import NOT_REQUIRED_PREFIX
 
 escape_characters = str.maketrans(
     {

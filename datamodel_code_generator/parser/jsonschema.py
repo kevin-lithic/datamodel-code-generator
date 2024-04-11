@@ -52,7 +52,7 @@ from datamodel_code_generator.parser.base import (
     title_to_class_name,
 )
 from datamodel_code_generator.reference import ModelType, Reference, is_url
-from datamodel_code_generator.types import (
+from datamodel_code_generator.internal_types import (
     DataType,
     DataTypeManager,
     EmptyDataType,

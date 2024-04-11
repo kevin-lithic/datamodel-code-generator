@@ -7,7 +7,7 @@ from datamodel_code_generator.imports import IMPORT_ANY, IMPORT_ENUM, Import
 from datamodel_code_generator.model import DataModel, DataModelFieldBase
 from datamodel_code_generator.model.base import UNDEFINED, BaseClassDataType
 from datamodel_code_generator.reference import Reference
-from datamodel_code_generator.types import DataType, Types
+from datamodel_code_generator.internal_types import DataType, Types
 
 _INT: str = 'int'
 _FLOAT: str = 'float'

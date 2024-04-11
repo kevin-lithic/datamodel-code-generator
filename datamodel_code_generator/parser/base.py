@@ -47,7 +47,7 @@ from datamodel_code_generator.model.base import (
 from datamodel_code_generator.model.enum import Enum, Member
 from datamodel_code_generator.parser import DefaultPutDict, LiteralType
 from datamodel_code_generator.reference import ModelResolver, Reference
-from datamodel_code_generator.types import DataType, DataTypeManager, StrictTypes
+from datamodel_code_generator.internal_types import DataType, DataTypeManager, StrictTypes
 from datamodel_code_generator.util import Protocol, runtime_checkable
 
 SPECIAL_PATH_FORMAT: str = '#-datamodel-code-generator-#-{}-#-special-#'

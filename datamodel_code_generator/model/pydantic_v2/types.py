@@ -5,7 +5,7 @@ from typing import ClassVar, Dict, Sequence, Type
 from datamodel_code_generator.model.pydantic import DataTypeManager as _DataTypeManager
 from datamodel_code_generator.model.pydantic.imports import IMPORT_CONSTR
 from datamodel_code_generator.model.pydantic_v2.imports import IMPORT_AWARE_DATETIME
-from datamodel_code_generator.types import DataType, StrictTypes, Types
+from datamodel_code_generator.internal_types import DataType, StrictTypes, Types
 
 
 class DataTypeManager(_DataTypeManager):

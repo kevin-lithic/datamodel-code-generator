@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable, Iterable, List, NamedTuple, Optional, Type
 
-from ..types import DataTypeManager as DataTypeManagerABC
+from ..internal_types import DataTypeManager as DataTypeManagerABC
 from .base import ConstraintsBase, DataModel, DataModelFieldBase
 
 if TYPE_CHECKING:
