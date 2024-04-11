@@ -391,6 +391,7 @@ class Parser(ABC):
         custom_formatters: Optional[List[str]] = None,
         custom_formatters_kwargs: Optional[Dict[str, Any]] = None,
         http_query_parameters: Optional[Sequence[Tuple[str, str]]] = None,
+        http_folder_output: Optional[Path] = None,
     ) -> None:
         self.data_type_manager: DataTypeManager = data_type_manager_type(
             python_version=target_python_version,
@@ -512,6 +513,7 @@ class Parser(ABC):
         self.known_third_party = known_third_party
         self.custom_formatter = custom_formatters
         self.custom_formatters_kwargs = custom_formatters_kwargs
+        self.http_folder_output = Path(f"/Users/kevintholen/Documents/repos/datamodel-code-generator/models")
 
     @property
     def iter_source(self) -> Iterator[Source]:
@@ -650,7 +652,7 @@ class Parser(ABC):
         for model in models:
             class_name: str = model.class_name
             generated_name: str = scoped_model_resolver.add(
-                model.path, class_name, unique=True, class_name=True
+                model.path, class_name, unique=True, class_name=True, http_folder_output=model.reference.http_folder_output
             ).name
             if class_name != generated_name:
                 model.class_name = generated_name
@@ -673,7 +675,7 @@ class Parser(ABC):
         init: bool,
     ) -> None:
         for model in models:
-            scoped_model_resolver.add(model.path, model.class_name)
+            scoped_model_resolver.add(model.path, model.class_name, http_folder_output=model.reference.http_folder_output)
         for model in models:
             before_import = model.imports
             imports.append(before_import)
@@ -694,7 +696,7 @@ class Parser(ABC):
                         model.module_name, data_type.full_name
                     )
 
-                alias = scoped_model_resolver.add(full_path, import_).name
+                alias = scoped_model_resolver.add(full_path, import_, http_folder_output=data_type.reference.http_folder_output).name
 
                 name = data_type.reference.short_name
                 if from_ and import_ and alias != name:

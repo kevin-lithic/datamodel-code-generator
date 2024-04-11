@@ -308,7 +308,12 @@ class DataModel(TemplateBase, Nullable, ABC):
         else:
             self.set_base_class()
 
-        self.file_path: Optional[Path] = path
+        if path:
+            self.file_path: Optional[Path] = path
+        elif reference.override_path:
+            self.file_path = reference.override_path
+            # self.file_path: Optional[Path] = Path(f"/Users/kevintholen/Documents/repos/datamodel-code-generator/models/{reference.short_name}")
+
         self.reference: Reference = reference
 
         self.reference.source = self

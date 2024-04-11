@@ -61,18 +61,18 @@ class _BaseModel(BaseModel):
         if PYDANTIC_V2:
 
             def dict(
-                self,
-                *,
-                include: Union[
-                    AbstractSet[Union[int, str]], Mapping[Union[int, str], Any], None
-                ] = None,
-                exclude: Union[
-                    AbstractSet[Union[int, str]], Mapping[Union[int, str], Any], None
-                ] = None,
-                by_alias: bool = False,
-                exclude_unset: bool = False,
-                exclude_defaults: bool = False,
-                exclude_none: bool = False,
+                    self,
+                    *,
+                    include: Union[
+                        AbstractSet[Union[int, str]], Mapping[Union[int, str], Any], None
+                    ] = None,
+                    exclude: Union[
+                        AbstractSet[Union[int, str]], Mapping[Union[int, str], Any], None
+                    ] = None,
+                    by_alias: bool = False,
+                    exclude_unset: bool = False,
+                    exclude_defaults: bool = False,
+                    exclude_none: bool = False,
             ) -> 'DictStrAny':
                 return self.model_dump(
                     include=include,
@@ -86,19 +86,19 @@ class _BaseModel(BaseModel):
         else:
 
             def dict(
-                self,
-                *,
-                include: Union[
-                    AbstractSet[Union[int, str]], Mapping[Union[int, str], Any], None
-                ] = None,
-                exclude: Union[
-                    AbstractSet[Union[int, str]], Mapping[Union[int, str], Any], None
-                ] = None,
-                by_alias: bool = False,
-                skip_defaults: Optional[bool] = None,
-                exclude_unset: bool = False,
-                exclude_defaults: bool = False,
-                exclude_none: bool = False,
+                    self,
+                    *,
+                    include: Union[
+                        AbstractSet[Union[int, str]], Mapping[Union[int, str], Any], None
+                    ] = None,
+                    exclude: Union[
+                        AbstractSet[Union[int, str]], Mapping[Union[int, str], Any], None
+                    ] = None,
+                    by_alias: bool = False,
+                    skip_defaults: Optional[bool] = None,
+                    exclude_unset: bool = False,
+                    exclude_defaults: bool = False,
+                    exclude_none: bool = False,
             ) -> 'DictStrAny':
                 return super().dict(
                     include=include,
@@ -120,6 +120,7 @@ class Reference(_BaseModel):
     source: Optional[Any] = None
     children: List[Any] = []
     _exclude_fields: ClassVar[Set[str]] = {'children'}
+    http_folder_output:Optional[Path]=None
 
     @model_validator(mode='before')
     def validate_original_name(cls, values: Any) -> Any:
@@ -158,6 +159,12 @@ class Reference(_BaseModel):
     def short_name(self) -> str:
         return self.name.rsplit('.', 1)[-1]
 
+    @property
+    def override_path(self) -> Optional[Path]:
+        if self.http_folder_output:
+            return Path(f"{self.http_folder_output.as_posix()}/{self.short_name}")
+        return None
+
 
 SINGULAR_NAME_SUFFIX: str = 'Item'
 
@@ -168,7 +175,7 @@ T = TypeVar('T')
 
 @contextmanager
 def context_variable(
-    setter: Callable[[T], None], current_value: T, new_value: T
+        setter: Callable[[T], None], current_value: T, new_value: T
 ) -> Generator[None, None, None]:
     previous_value: T = current_value
     setter(new_value)
@@ -190,14 +197,14 @@ def camel_to_snake(string: str) -> str:
 
 class FieldNameResolver:
     def __init__(
-        self,
-        aliases: Optional[Mapping[str, str]] = None,
-        snake_case_field: bool = False,
-        empty_field_name: Optional[str] = None,
-        original_delimiter: Optional[str] = None,
-        special_field_name_prefix: Optional[str] = None,
-        remove_special_field_name_prefix: bool = False,
-        capitalise_enum_members: bool = False,
+            self,
+            aliases: Optional[Mapping[str, str]] = None,
+            snake_case_field: bool = False,
+            empty_field_name: Optional[str] = None,
+            original_delimiter: Optional[str] = None,
+            special_field_name_prefix: Optional[str] = None,
+            remove_special_field_name_prefix: bool = False,
+            capitalise_enum_members: bool = False,
     ):
         self.aliases: Mapping[str, str] = {} if aliases is None else {**aliases}
         self.empty_field_name: str = empty_field_name or '_'
@@ -214,11 +221,11 @@ class FieldNameResolver:
         return True
 
     def get_valid_name(
-        self,
-        name: str,
-        excludes: Optional[Set[str]] = None,
-        ignore_snake_case_field: bool = False,
-        upper_camel: bool = False,
+            self,
+            name: str,
+            excludes: Optional[Set[str]] = None,
+            ignore_snake_case_field: bool = False,
+            upper_camel: bool = False,
     ) -> str:
         if not name:
             name = self.empty_field_name
@@ -226,9 +233,9 @@ class FieldNameResolver:
             name = name[1:] or self.empty_field_name
 
         if (
-            self.snake_case_field
-            and not ignore_snake_case_field
-            and self.original_delimiter is not None
+                self.snake_case_field
+                and not ignore_snake_case_field
+                and self.original_delimiter is not None
         ):
             name = snake_to_upper_camel(name, delimiter=self.original_delimiter)
 
@@ -245,9 +252,9 @@ class FieldNameResolver:
                 name = f'{self.special_field_name_prefix}{name}'
                 break
         if (
-            self.capitalise_enum_members
-            or self.snake_case_field
-            and not ignore_snake_case_field
+                self.capitalise_enum_members
+                or self.snake_case_field
+                and not ignore_snake_case_field
         ):
             name = camel_to_snake(name)
         count = 1
@@ -260,16 +267,16 @@ class FieldNameResolver:
         else:
             new_name = name
         while (
-            not (new_name.isidentifier() or not self._validate_field_name(new_name))
-            or iskeyword(new_name)
-            or (excludes and new_name in excludes)
+                not (new_name.isidentifier() or not self._validate_field_name(new_name))
+                or iskeyword(new_name)
+                or (excludes and new_name in excludes)
         ):
             new_name = f'{name}{count}' if upper_camel else f'{name}_{count}'
             count += 1
         return new_name
 
     def get_valid_field_name_and_alias(
-        self, field_name: str, excludes: Optional[Set[str]] = None
+            self, field_name: str, excludes: Optional[Set[str]] = None
     ) -> Tuple[str, Optional[str]]:
         if field_name in self.aliases:
             return self.aliases[field_name], field_name
@@ -286,11 +293,11 @@ class PydanticFieldNameResolver(FieldNameResolver):
 
 class EnumFieldNameResolver(FieldNameResolver):
     def get_valid_name(
-        self,
-        name: str,
-        excludes: Optional[Set[str]] = None,
-        ignore_snake_case_field: bool = False,
-        upper_camel: bool = False,
+            self,
+            name: str,
+            excludes: Optional[Set[str]] = None,
+            ignore_snake_case_field: bool = False,
+            upper_camel: bool = False,
     ) -> str:
         return super().get_valid_name(
             name='mro_' if name == 'mro' else name,
@@ -337,23 +344,23 @@ def get_relative_path(base_path: PurePath, target_path: PurePath) -> PurePath:
 
 class ModelResolver:
     def __init__(
-        self,
-        exclude_names: Optional[Set[str]] = None,
-        duplicate_name_suffix: Optional[str] = None,
-        base_url: Optional[str] = None,
-        singular_name_suffix: Optional[str] = None,
-        aliases: Optional[Mapping[str, str]] = None,
-        snake_case_field: bool = False,
-        empty_field_name: Optional[str] = None,
-        custom_class_name_generator: Optional[Callable[[str], str]] = None,
-        base_path: Optional[Path] = None,
-        field_name_resolver_classes: Optional[
-            Dict[ModelType, Type[FieldNameResolver]]
-        ] = None,
-        original_field_name_delimiter: Optional[str] = None,
-        special_field_name_prefix: Optional[str] = None,
-        remove_special_field_name_prefix: bool = False,
-        capitalise_enum_members: bool = False,
+            self,
+            exclude_names: Optional[Set[str]] = None,
+            duplicate_name_suffix: Optional[str] = None,
+            base_url: Optional[str] = None,
+            singular_name_suffix: Optional[str] = None,
+            aliases: Optional[Mapping[str, str]] = None,
+            snake_case_field: bool = False,
+            empty_field_name: Optional[str] = None,
+            custom_class_name_generator: Optional[Callable[[str], str]] = None,
+            base_path: Optional[Path] = None,
+            field_name_resolver_classes: Optional[
+                Dict[ModelType, Type[FieldNameResolver]]
+            ] = None,
+            original_field_name_delimiter: Optional[str] = None,
+            special_field_name_prefix: Optional[str] = None,
+            remove_special_field_name_prefix: bool = False,
+            capitalise_enum_members: bool = False,
     ) -> None:
         self.references: Dict[str, Reference] = {}
         self._current_root: Sequence[str] = []
@@ -387,7 +394,7 @@ class ModelResolver:
             for k, v in merged_field_name_resolver_classes.items()
         }
         self.class_name_generator = (
-            custom_class_name_generator or self.default_class_name_generator
+                custom_class_name_generator or self.default_class_name_generator
         )
         self._base_path: Path = base_path or Path.cwd()
         self._current_base_path: Optional[Path] = self._base_path
@@ -408,12 +415,12 @@ class ModelResolver:
 
     @contextmanager
     def current_base_path_context(
-        self, base_path: Optional[Path]
+            self, base_path: Optional[Path]
     ) -> Generator[None, None, None]:
         if base_path:
             base_path = (self._base_path / base_path).resolve()
         with context_variable(
-            self.set_current_base_path, self.current_base_path, base_path
+                self.set_current_base_path, self.current_base_path, base_path
         ):
             yield
 
@@ -436,7 +443,7 @@ class ModelResolver:
 
     @contextmanager
     def current_root_context(
-        self, current_root: Sequence[str]
+            self, current_root: Sequence[str]
     ) -> Generator[None, None, None]:
         with context_variable(self.set_current_root, self.current_root, current_root):
             yield
@@ -468,10 +475,10 @@ class ModelResolver:
         if joined_path == '#':
             return f"{'/'.join(self.current_root)}#"
         if (
-            self.current_base_path
-            and not self.base_url
-            and joined_path[0] != '#'
-            and not is_url(joined_path)
+                self.current_base_path
+                and not self.base_url
+                and joined_path[0] != '#'
+                and not is_url(joined_path)
         ):
             # resolve local file path
             file_path, *object_part = joined_path.split('#', 1)
@@ -493,7 +500,7 @@ class ModelResolver:
             file_path = ''.join(joined_path[:delimiter])
             ref = f"{''.join(joined_path[:delimiter])}#{''.join(joined_path[delimiter + 1:])}"
             if self.root_id_base_path and not (
-                is_url(joined_path) or Path(self._base_path, file_path).is_file()
+                    is_url(joined_path) or Path(self._base_path, file_path).is_file()
             ):
                 ref = f'{self.root_id_base_path}/{ref}'
 
@@ -514,15 +521,15 @@ class ModelResolver:
                 return ref
             root_id_url: ParseResult = urlparse(self.root_id)
             if (target_url.scheme, target_url.netloc) == (
-                root_id_url.scheme,
-                root_id_url.netloc,
+                    root_id_url.scheme,
+                    root_id_url.netloc,
             ):  # pragma: no cover
                 target_url_path = Path(target_url.path)
                 relative_target_base = get_relative_path(
                     Path(root_id_url.path).parent, target_url_path.parent
                 )
                 target_path = (
-                    self.current_base_path / relative_target_base / target_url_path.name
+                        self.current_base_path / relative_target_base / target_url_path.name
                 )
                 if target_path.exists():
                     return f'{target_path.resolve().relative_to(self._base_path)}#{path_part}'
@@ -555,7 +562,7 @@ class ModelResolver:
             joined_path += '#'
         return joined_path
 
-    def add_ref(self, ref: str, resolved: bool = False) -> Reference:
+    def add_ref(self, ref: str, resolved: bool = False,http_folder_output: Optional[Path] = None,) -> Reference:
         if not resolved:
             path = self.resolve_ref(ref)
         else:
@@ -580,21 +587,23 @@ class ModelResolver:
             original_name=original_name,
             name=name,
             loaded=False,
+            http_folder_output=http_folder_output
         )
 
         self.references[path] = reference
         return reference
 
     def add(
-        self,
-        path: Sequence[str],
-        original_name: str,
-        *,
-        class_name: bool = False,
-        singular_name: bool = False,
-        unique: bool = True,
-        singular_name_suffix: Optional[str] = None,
-        loaded: bool = False,
+            self,
+            path: Sequence[str],
+            original_name: str,
+            *,
+            class_name: bool = False,
+            singular_name: bool = False,
+            unique: bool = True,
+            singular_name_suffix: Optional[str] = None,
+            loaded: bool = False,
+            http_folder_output: Optional[Path] = None,
     ) -> Reference:
         joined_path = self.join_path(path)
         reference: Optional[Reference] = self.references.get(joined_path)
@@ -602,9 +611,9 @@ class ModelResolver:
             if loaded and not reference.loaded:
                 reference.loaded = True
             if (
-                not original_name
-                or original_name == reference.original_name
-                or original_name == reference.name
+                    not original_name
+                    or original_name == reference.original_name
+                    or original_name == reference.name
             ):
                 return reference
         name = original_name
@@ -641,6 +650,7 @@ class ModelResolver:
                 name=name,
                 loaded=loaded,
                 duplicate_name=duplicate_name,
+                http_folder_output=http_folder_output
             )
             self.references[joined_path] = reference
         return reference
@@ -659,12 +669,12 @@ class ModelResolver:
         )
 
     def get_class_name(
-        self,
-        name: str,
-        unique: bool = True,
-        reserved_name: Optional[str] = None,
-        singular_name: bool = False,
-        singular_name_suffix: Optional[str] = None,
+            self,
+            name: str,
+            unique: bool = True,
+            reserved_name: Optional[str] = None,
+            singular_name: bool = False,
+            singular_name_suffix: Optional[str] = None,
     ) -> ClassName:
         if '.' in name:
             split_name = name.split('.')
@@ -702,8 +712,8 @@ class ModelResolver:
         unique_name: str = name
         count: int = 1
         reference_names = {
-            r.name for r in self.references.values()
-        } | self.exclude_names
+                              r.name for r in self.references.values()
+                          } | self.exclude_names
         while unique_name in reference_names:
             if self.duplicate_name_suffix:
                 name_parts: List[Union[str, int]] = [
@@ -723,18 +733,18 @@ class ModelResolver:
         return name.isidentifier() and not iskeyword(name)
 
     def get_valid_field_name(
-        self,
-        name: str,
-        excludes: Optional[Set[str]] = None,
-        model_type: ModelType = ModelType.PYDANTIC,
+            self,
+            name: str,
+            excludes: Optional[Set[str]] = None,
+            model_type: ModelType = ModelType.PYDANTIC,
     ) -> str:
         return self.field_name_resolvers[model_type].get_valid_name(name, excludes)
 
     def get_valid_field_name_and_alias(
-        self,
-        field_name: str,
-        excludes: Optional[Set[str]] = None,
-        model_type: ModelType = ModelType.PYDANTIC,
+            self,
+            field_name: str,
+            excludes: Optional[Set[str]] = None,
+            model_type: ModelType = ModelType.PYDANTIC,
     ) -> Tuple[str, Optional[str]]:
         return self.field_name_resolvers[model_type].get_valid_field_name_and_alias(
             field_name, excludes

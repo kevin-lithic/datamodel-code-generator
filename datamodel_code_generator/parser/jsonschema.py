@@ -439,6 +439,7 @@ class JsonSchemaParser(Parser):
         custom_formatters: Optional[List[str]] = None,
         custom_formatters_kwargs: Optional[Dict[str, Any]] = None,
         http_query_parameters: Optional[Sequence[Tuple[str, str]]] = None,
+        http_folder_output: Optional[Path] = None,
     ) -> None:
         super().__init__(
             source=source,
@@ -505,6 +506,7 @@ class JsonSchemaParser(Parser):
             custom_formatters=custom_formatters,
             custom_formatters_kwargs=custom_formatters_kwargs,
             http_query_parameters=http_query_parameters,
+            http_folder_output=http_folder_output,
         )
 
         self.remote_object_cache: DefaultPutDict[str, Dict[str, Any]] = DefaultPutDict()
@@ -630,7 +632,7 @@ class JsonSchemaParser(Parser):
         return _get_data_type(obj.type, obj.format or 'default')
 
     def get_ref_data_type(self, ref: str) -> DataType:
-        reference = self.model_resolver.add_ref(ref)
+        reference = self.model_resolver.add_ref(ref,http_folder_output=self.http_folder_output)
         return self.data_type(reference=reference)
 
     def set_additional_properties(self, name: str, obj: JsonSchemaObject) -> None:
@@ -1475,6 +1477,7 @@ class JsonSchemaParser(Parser):
             singular_name=singular_name,
             singular_name_suffix='Enum',
             loaded=True,
+            http_folder_output=self.http_folder_output
         )
 
         if not nullable:
@@ -1759,7 +1762,7 @@ class JsonSchemaParser(Parser):
             path = path_parts
         with self.model_resolver.current_root_context(path_parts):
             obj_name = self.model_resolver.add(
-                path, obj_name, unique=False, class_name=True
+                path, obj_name, unique=False, class_name=True,http_folder_output= self.http_folder_output
             ).name
             with self.root_id_context(raw):
                 # Some jsonschema docs include attribute self to have include version details
