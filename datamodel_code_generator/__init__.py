@@ -459,6 +459,7 @@ def generate(
         custom_formatters=custom_formatters,
         custom_formatters_kwargs=custom_formatters_kwargs,
         http_query_parameters=http_query_parameters,
+        http_folder_output=output if isinstance(input_, ParseResult) and output.is_dir() else None,
         **kwargs,
     )
 

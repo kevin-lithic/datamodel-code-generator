@@ -513,7 +513,7 @@ class Parser(ABC):
         self.known_third_party = known_third_party
         self.custom_formatter = custom_formatters
         self.custom_formatters_kwargs = custom_formatters_kwargs
-        self.http_folder_output = Path(f"/Users/kevintholen/Documents/repos/datamodel-code-generator/models")
+        self.http_folder_output = http_folder_output
 
     @property
     def iter_source(self) -> Iterator[Source]:
