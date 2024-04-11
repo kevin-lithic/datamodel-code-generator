@@ -300,6 +300,7 @@ def generate(
     custom_formatters: Optional[List[str]] = None,
     custom_formatters_kwargs: Optional[Dict[str, Any]] = None,
     http_query_parameters: Optional[Sequence[Tuple[str, str]]] = None,
+    use_pendulum: bool = False,
 ) -> None:
     remote_text_cache: DefaultPutDict[str, str] = DefaultPutDict()
     if isinstance(input_, str):
@@ -462,6 +463,7 @@ def generate(
         http_folder_output=output
         if isinstance(input_, ParseResult) and output.is_dir()
         else None,
+        use_pendulum=use_pendulum,
         **kwargs,
     )
 
