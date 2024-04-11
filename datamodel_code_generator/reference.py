@@ -498,7 +498,7 @@ class ModelResolver:
                 ref = f'{self.root_id_base_path}/{ref}'
 
         if self.base_url:
-            from .http import join_url
+            from .internal_http import join_url
 
             joined_url = join_url(self.base_url, ref)
             if '#' in joined_url:

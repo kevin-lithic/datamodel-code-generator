@@ -546,7 +546,7 @@ class Parser(ABC):
             self.imports.append(new_import)
 
     def _get_text_from_url(self, url: str) -> str:
-        from datamodel_code_generator.http import get_body
+        from datamodel_code_generator.internal_http import get_body
 
         return self.remote_text_cache.get_or_put(
             url,
